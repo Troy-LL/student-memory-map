@@ -144,6 +144,8 @@ function App() {
                   Choose your phase
                 </span>
                 <select
+                  id="student-phase"
+                  name="student-phase"
                   className="bg-black border border-sky-500 rounded-full px-3 py-1 text-[11px] text-neutral-100 shadow-[0_0_12px_rgba(56,189,248,0.4)]"
                   value={maxSemesterIndex}
                   onChange={(e) => setMaxSemesterIndex(Number(e.target.value))}
