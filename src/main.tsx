@@ -4,6 +4,7 @@ import './index.css';
 import App from './App.tsx';
 import { useAppStore } from './state/store.ts';
 import sampleCurriculum from '../data/subjects/sample_cs_curriculum.json';
+import type { CurriculumGraph } from './types.ts';
 
 const Root = () => {
   const loadCurriculumFromGraph = useAppStore(
@@ -11,7 +12,7 @@ const Root = () => {
   );
 
   useEffect(() => {
-    loadCurriculumFromGraph(sampleCurriculum);
+    loadCurriculumFromGraph(sampleCurriculum as unknown as CurriculumGraph);
   }, [loadCurriculumFromGraph]);
 
   return <App />;
