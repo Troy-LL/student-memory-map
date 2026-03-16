@@ -1,3 +1,25 @@
 @import 'tailwindcss';
 
 @custom-variant dark (&:is(.dark *));
+
+.heatmap-scroll {
+  scrollbar-width: thin;
+  scrollbar-color: #4b5563 #020617;
+}
+
+.heatmap-scroll::-webkit-scrollbar {
+  width: 6px;
+}
+
+.heatmap-scroll::-webkit-scrollbar-track {
+  background: #020617;
+}
+
+.heatmap-scroll::-webkit-scrollbar-thumb {
+  background: #4b5563;
+  border-radius: 9999px;
+}
+
+.heatmap-scroll::-webkit-scrollbar-thumb:hover {
+  background: #9ca3af;
+}

@@ -1,4 +1,5 @@
 import type { FC } from 'react';
+import { useEffect, useRef } from 'react';
 import { useAppStore } from '../../state/store';
 import { buildRetentionMatrix } from '../../utils/analytics';
 import { retentionToColor } from '../../utils/color';
@@ -10,13 +11,30 @@ export const RetentionHeatmap: FC = () => {
   const selectSubject = useAppStore((s) => s.selectSubject);
   const selectedSubjectId = useAppStore((s) => s.selectedSubjectId);
 
-  if (!graph) return null;
+  const containerRef = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    if (!containerRef.current || !selectedSubjectId) return;
+    const row = containerRef.current.querySelector<HTMLTableRowElement>(
+      `tr[data-subject-id="${selectedSubjectId}"]`,
+    );
+    if (row) {
+      row.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+    }
+  }, [selectedSubjectId]);
+
+  if (!graph) {
+    return null;
+  }
 
   const matrix = buildRetentionMatrix(graph, retentionBySemester);
 
   return (
     <div className="mt-3 border border-neutral-900 rounded-lg overflow-hidden bg-black/80">
-      <div className="max-h-44 overflow-auto text-[10px]">
+      <div
+        ref={containerRef}
+        className="max-h-44 overflow-auto text-[10px] heatmap-scroll"
+      >
         <table className="w-full border-collapse">
           <thead className="bg-black sticky top-0">
             <tr>
@@ -39,6 +57,7 @@ export const RetentionHeatmap: FC = () => {
               return (
                 <tr
                   key={subjectId}
+                  data-subject-id={subjectId}
                   className={
                     isSelected
                       ? 'bg-neutral-800'

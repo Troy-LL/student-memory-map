@@ -84,7 +84,7 @@ function App() {
 
         <section
           aria-label="Timeline & details"
-          className="border-t border-neutral-900 bg-black/95 backdrop-blur px-4 py-3 lg:px-6 flex flex-col gap-2"
+          className="border-t border-neutral-900 bg-black/95 backdrop-blur px-4 py-3 lg:px-6 flex flex-col gap-3"
         >
           <div className="flex items-center justify-between gap-3">
             <div className="flex items-center gap-3 text-xs text-neutral-300">
@@ -140,7 +140,40 @@ function App() {
               </div>
             </div>
           </div>
-          <SubjectDetail />
+          <div className="flex flex-col lg:flex-row gap-4">
+            <div className="flex-1">
+              <SubjectDetail />
+            </div>
+            <div className="w-full lg:w-[320px] text-[10px] text-neutral-300 bg-black/80 border border-neutral-800 rounded-md px-3 py-2">
+              <div className="font-semibold text-[10px] text-neutral-200 mb-1">
+                Visual legend
+              </div>
+              <div className="flex flex-wrap gap-2 mb-1.5">
+                <span className="flex items-center gap-1">
+                  <span className="inline-block w-2 h-2 rounded-full bg-amber-400" />
+                  <span>CS</span>
+                </span>
+                <span className="flex items-center gap-1">
+                  <span className="inline-block w-2 h-2 rounded-full bg-emerald-400" />
+                  <span>Math</span>
+                </span>
+                <span className="flex items-center gap-1">
+                  <span className="inline-block w-2 h-2 rounded-full bg-sky-400" />
+                  <span>GE / Core</span>
+                </span>
+                <span className="flex items-center gap-1">
+                  <span className="inline-block w-2 h-2 rounded-full bg-violet-400" />
+                  <span>Other</span>
+                </span>
+              </div>
+              <ul className="space-y-0.5">
+                <li>• Line = prereq / overlap between subjects</li>
+                <li>• Bigger bubble = more connections</li>
+                <li>• Bright bubble = active this semester</li>
+                <li>• Heatmap color = retention (cool → hot)</li>
+              </ul>
+            </div>
+          </div>
         </section>
       </main>
     </div>
