@@ -13,6 +13,8 @@ function App() {
   const isPlaying = useAppStore((s) => s.isPlaying);
   const play = useAppStore((s) => s.play);
   const pause = useAppStore((s) => s.pause);
+  const maxSemesterIndex = useAppStore((s) => s.maxSemesterIndex);
+  const setMaxSemesterIndex = useAppStore((s) => s.setMaxSemesterIndex);
 
   useEffect(() => {
     if (!isPlaying || !graph) {
@@ -20,13 +22,15 @@ function App() {
     }
 
     const interval = window.setInterval(() => {
+      const upper =
+        maxSemesterIndex ?? graph.semesters.length - 1;
       const next =
-        (currentSemesterIndex + 1) % (graph.semesters.length || 1);
+        currentSemesterIndex >= upper ? 0 : currentSemesterIndex + 1;
       setCurrentSemester(next);
     }, 2500);
 
     return () => window.clearInterval(interval);
-  }, [isPlaying, graph, currentSemesterIndex, setCurrentSemester]);
+  }, [isPlaying, graph, currentSemesterIndex, maxSemesterIndex, setCurrentSemester]);
 
   return (
     <div className="min-h-screen bg-black text-neutral-100 flex flex-col">
@@ -90,23 +94,29 @@ function App() {
             <div className="flex items-center gap-3 text-xs text-neutral-300">
               <span className="font-semibold">Semester</span>
               <div className="flex gap-1">
-                {Array.from({ length: 8 }).map((_, i) => (
-                  <button
-                    key={i}
-                    type="button"
-                    onClick={() => setCurrentSemester(i)}
-                    className={`w-6 h-6 rounded-full border text-[11px] transition-colors ${
-                      currentSemesterIndex === i
-                        ? 'border-neutral-100 text-neutral-100 bg-neutral-50/5'
-                        : 'border-neutral-700 text-neutral-500 hover:border-neutral-200 hover:text-neutral-100'
-                    }`}
-                  >
-                    {i + 1}
-                  </button>
-                ))}
+                {Array.from({ length: 8 }).map((_, i) => {
+                  const disabled = graph && i > maxSemesterIndex;
+                  return (
+                    <button
+                      key={i}
+                      type="button"
+                      disabled={disabled}
+                      onClick={() => !disabled && setCurrentSemester(i)}
+                      className={`w-6 h-6 rounded-full border text-[11px] transition-colors ${
+                        disabled
+                          ? 'border-neutral-800 text-neutral-700 cursor-not-allowed'
+                          : currentSemesterIndex === i
+                          ? 'border-neutral-100 text-neutral-100 bg-neutral-50/5'
+                          : 'border-neutral-700 text-neutral-500 hover:border-neutral-200 hover:text-neutral-100'
+                      }`}
+                    >
+                      {i + 1}
+                    </button>
+                  );
+                })}
               </div>
             </div>
-            <div className="flex items-center gap-3 text-xs text-neutral-400">
+            <div className="flex items-center gap-4 text-xs text-neutral-400">
               <button
                 type="button"
                 onClick={play}
@@ -129,6 +139,21 @@ function App() {
               >
                 Pause
               </button>
+              <div className="flex items-center gap-2">
+                <span className="uppercase tracking-wide text-[10px] text-sky-400 font-semibold">
+                  Choose your phase
+                </span>
+                <select
+                  className="bg-black border border-sky-500 rounded-full px-3 py-1 text-[11px] text-neutral-100 shadow-[0_0_12px_rgba(56,189,248,0.4)]"
+                  value={maxSemesterIndex}
+                  onChange={(e) => setMaxSemesterIndex(Number(e.target.value))}
+                >
+                  <option value={1}>Up to Year 1</option>
+                  <option value={3}>Up to Year 2</option>
+                  <option value={5}>Up to Year 3</option>
+                  <option value={7}>Up to Year 4</option>
+                </select>
+              </div>
               <div className="hidden sm:flex items-center gap-1 text-[11px] text-neutral-500">
                 <span className="uppercase tracking-wide">Time</span>
                 <span className="w-px h-3 bg-neutral-800" />

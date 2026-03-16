@@ -10,6 +10,7 @@ export const RetentionHeatmap: FC = () => {
   const setCurrentSemester = useAppStore((s) => s.setCurrentSemester);
   const selectSubject = useAppStore((s) => s.selectSubject);
   const selectedSubjectId = useAppStore((s) => s.selectedSubjectId);
+  const maxSemesterIndex = useAppStore((s) => s.maxSemesterIndex);
 
   const containerRef = useRef<HTMLDivElement | null>(null);
 
@@ -27,7 +28,16 @@ export const RetentionHeatmap: FC = () => {
     return null;
   }
 
-  const matrix = buildRetentionMatrix(graph, retentionBySemester);
+  const fullMatrix = buildRetentionMatrix(graph, retentionBySemester);
+  const upper = Math.max(
+    0,
+    Math.min(maxSemesterIndex, fullMatrix.semesters.length - 1),
+  );
+  const matrix = {
+    semesters: fullMatrix.semesters.slice(0, upper + 1),
+    subjectIds: fullMatrix.subjectIds,
+    values: fullMatrix.values.slice(0, upper + 1),
+  };
 
   return (
     <div className="mt-3 border border-neutral-900 rounded-lg overflow-hidden bg-black/80">

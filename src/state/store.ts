@@ -11,6 +11,9 @@ interface AppState {
   retentionBySemester: Record<number, RetentionBySubjectId>;
   selectedSubjectId: string | null;
   isPlaying: boolean;
+  maxSemesterIndex: number;
+  chartMode: 'overall' | 'subject';
+  chartSubjectId: string | null;
   loading: boolean;
   error: string | null;
   loadCurriculum: (path: string) => Promise<void>;
@@ -18,6 +21,7 @@ interface AppState {
   selectSubject: (id: string | null) => void;
   play: () => void;
   pause: () => void;
+  setMaxSemesterIndex: (index: number) => void;
 }
 
 export const useAppStore = create<AppState>((set, get) => ({
@@ -26,6 +30,9 @@ export const useAppStore = create<AppState>((set, get) => ({
   retentionBySemester: {},
   selectedSubjectId: null,
   isPlaying: false,
+  maxSemesterIndex: 7,
+  chartMode: 'overall',
+  chartSubjectId: null,
   loading: false,
   error: null,
 
@@ -51,6 +58,10 @@ export const useAppStore = create<AppState>((set, get) => ({
         retentionBySemester,
         currentSemesterIndex: 0,
         selectedSubjectId: null,
+        isPlaying: false,
+        maxSemesterIndex: graph.semesters.length - 1,
+        chartMode: 'overall',
+        chartSubjectId: null,
         loading: false,
         error: null,
       });
@@ -62,28 +73,51 @@ export const useAppStore = create<AppState>((set, get) => ({
   },
 
   setCurrentSemester(index: number) {
-    const { graph, retentionBySemester } = get();
+    const { graph, retentionBySemester, maxSemesterIndex } = get();
     if (!graph) {
       return;
     }
 
-    if (retentionBySemester[index] == null) {
-      retentionBySemester[index] = computeSemesterRetentions(graph, index);
+    const clamped = Math.max(0, Math.min(index, maxSemesterIndex));
+
+    if (retentionBySemester[clamped] == null) {
+      retentionBySemester[clamped] = computeSemesterRetentions(
+        graph,
+        clamped,
+      );
     }
 
-    set({ currentSemesterIndex: index, retentionBySemester: { ...retentionBySemester } });
+    set({
+      currentSemesterIndex: clamped,
+      retentionBySemester: { ...retentionBySemester },
+    });
   },
 
   selectSubject(id: string | null) {
-    set({ selectedSubjectId: id });
+    const { isPlaying } = get();
+    set({
+      selectedSubjectId: id,
+      chartMode: !isPlaying && id ? 'subject' : 'overall',
+      chartSubjectId: id,
+    });
   },
 
   play() {
-    set({ isPlaying: true });
+    set({ isPlaying: true, chartMode: 'overall' });
   },
 
   pause() {
     set({ isPlaying: false });
+  },
+
+  setMaxSemesterIndex(index: number) {
+    const { graph, currentSemesterIndex } = get();
+    if (!graph) return;
+    const max = Math.max(0, Math.min(index, graph.semesters.length - 1));
+    set({
+      maxSemesterIndex: max,
+      currentSemesterIndex: Math.min(currentSemesterIndex, max),
+    });
   },
 }));
 
