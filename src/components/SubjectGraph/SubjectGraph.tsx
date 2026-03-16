@@ -176,7 +176,7 @@ export const SubjectGraph: FC = () => {
         })}
 
         {edges.map((e, i) => {
-          const { from, to, overlapWeight, type } = e;
+          const { from, to, type } = e;
           const fromDeg = degree.get(from.id) ?? 1;
           const toDeg = degree.get(to.id) ?? 1;
           const fromR = BASE_NODE_RADIUS + fromDeg * 2;

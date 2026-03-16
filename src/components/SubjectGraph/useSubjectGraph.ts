@@ -34,7 +34,8 @@ export function useSubjectGraph({
       .domain(graph.semesters.map((s) => s.index))
       .range([80, width - 80]);
 
-    const nodes: (SubjectNode & d3.SimulationNodeDatum)[] = [];
+    type GraphNode = SubjectNode & d3.SimulationNodeDatum;
+    const nodes: GraphNode[] = [];
     const verticalPadding = 120;
     const usableHeight = height - verticalPadding * 2;
 
@@ -62,10 +63,10 @@ export function useSubjectGraph({
       });
     });
 
-    const nodeById = new Map<string, SubjectNode & d3.SimulationNodeDatum>();
+    const nodeById = new Map<string, GraphNode>();
     nodes.forEach((n) => nodeById.set(n.id, n));
 
-    const links: (SubjectEdge & d3.SimulationLinkDatum<SubjectNode>)[] =
+    const links: (SubjectEdge & d3.SimulationLinkDatum<GraphNode>)[] =
       graph.edges.map((e) => ({
         ...e,
         source: nodeById.get(e.from)!,
@@ -126,7 +127,7 @@ export function useSubjectGraph({
       }
     };
 
-    const linkSelection = g
+    g
       .append('g')
       .attr('stroke-linecap', 'round')
       .selectAll('path')
@@ -144,8 +145,8 @@ export function useSubjectGraph({
         d.type === 'prereq' ? 0.5 + d.overlapWeight * 0.4 : 0.15 + d.overlapWeight * 0.2,
       )
       .attr('d', (d) => {
-        const source = d.source as SubjectNode & d3.SimulationNodeDatum;
-        const target = d.target as SubjectNode & d3.SimulationNodeDatum;
+        const source = d.source as GraphNode;
+        const target = d.target as GraphNode;
         const x1 = source.x ?? 0;
         const y1 = source.y ?? 0;
         const x2 = target.x ?? 0;

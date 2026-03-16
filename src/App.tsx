@@ -95,7 +95,7 @@ function App() {
               <span className="font-semibold">Semester</span>
               <div className="flex gap-1">
                 {Array.from({ length: 8 }).map((_, i) => {
-                  const disabled = graph && i > maxSemesterIndex;
+                  const disabled = !!graph && i > maxSemesterIndex;
                   return (
                     <button
                       key={i}
