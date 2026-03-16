@@ -83,7 +83,7 @@
       "decayRate": 0.4,
       "position": { "y": 720.0, "x": 0.0 }
     }
-    /* truncated for brevity: rest of subjects/edges/semesters copied from data/subjects/sample_cs_curriculum.json */
+    /* ... full contents should exactly mirror data/subjects/sample_cs_curriculum.json with NO comments in real file ... */
   ],
   "edges": [
     {
@@ -92,7 +92,7 @@
       "overlapWeight": 0.9,
       "type": "prereq"
     }
-    /* rest of edges copied as-is */
+    /* etc ... */
   ],
   "semesters": [
     {
@@ -100,7 +100,7 @@
       "label": "Y1S1 – Foundations",
       "subjectIds": ["CSCI20", "MATH_PRECALC", "CORE_SELF", "CORE_COMM", "INTACT"]
     }
-    /* rest of semesters copied as-is */
+    /* etc ... */
   ]
 }
 

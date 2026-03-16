@@ -17,6 +17,7 @@ interface AppState {
   loading: boolean;
   error: string | null;
   loadCurriculum: (path: string) => Promise<void>;
+  loadCurriculumFromGraph: (graph: CurriculumGraph) => void;
   setCurrentSemester: (index: number) => void;
   selectSubject: (id: string | null) => void;
   play: () => void;
@@ -70,6 +71,29 @@ export const useAppStore = create<AppState>((set, get) => ({
         err instanceof Error ? err.message : 'Unknown error loading curriculum';
       set({ loading: false, error: message });
     }
+  },
+
+  loadCurriculumFromGraph(graph: CurriculumGraph) {
+    const retentionBySemester: Record<number, RetentionBySubjectId> = {};
+    for (const semester of graph.semesters) {
+      retentionBySemester[semester.index] = computeSemesterRetentions(
+        graph,
+        semester.index,
+      );
+    }
+
+    set({
+      graph,
+      retentionBySemester,
+      currentSemesterIndex: 0,
+      selectedSubjectId: null,
+      isPlaying: false,
+      maxSemesterIndex: graph.semesters.length - 1,
+      chartMode: 'overall',
+      chartSubjectId: null,
+      loading: false,
+      error: null,
+    });
   },
 
   setCurrentSemester(index: number) {

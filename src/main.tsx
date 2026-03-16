@@ -3,13 +3,16 @@ import { createRoot } from 'react-dom/client';
 import './index.css';
 import App from './App.tsx';
 import { useAppStore } from './state/store.ts';
+import sampleCurriculum from '../data/subjects/sample_cs_curriculum.json';
 
 const Root = () => {
-  const loadCurriculum = useAppStore((s) => s.loadCurriculum);
+  const loadCurriculumFromGraph = useAppStore(
+    (s) => s.loadCurriculumFromGraph,
+  );
 
   useEffect(() => {
-    void loadCurriculum('/data/subjects/sample_cs_curriculum.json');
-  }, [loadCurriculum]);
+    loadCurriculumFromGraph(sampleCurriculum);
+  }, [loadCurriculumFromGraph]);
 
   return <App />;
 };
